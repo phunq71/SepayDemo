@@ -36,7 +36,7 @@ function initVueApp() {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            amount: amount.value,
+                            amount: parseFloat(amount.value),
                             description: description.value,
                             returnUrl: window.location.origin + '/payment/success',
                             cancelUrl: window.location.origin + '/payment/cancel'
