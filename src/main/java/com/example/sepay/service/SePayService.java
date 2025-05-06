@@ -34,6 +34,22 @@ public class SePayService {
     private String endpoint;
     
     private final TransactionRepository transactionRepository;
+
+    public String generateQRCode(String paymentUrl, int width, int height) {
+        try {
+            String qrCodeData = URLEncoder.encode(paymentUrl, StandardCharsets.UTF_8.toString());
+            return "https://api.qrserver.com/v1/create-qr-code/?size=" + width + "x" + height + "&data=" + qrCodeData;
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error generating QR code", e);
+        }
+    }
+    
+    public PaymentResponse createPaymentWithQR(PaymentRequest request, int qrWidth, int qrHeight) {
+        PaymentResponse response = createPayment(request);
+        String qrCodeUrl = generateQRCode(response.getPaymentUrl(), qrWidth, qrHeight);
+        response.setQrCodeUrl(qrCodeUrl);
+        return response;
+    }
     
     public SePayService(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
