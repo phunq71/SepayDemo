@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
     
     private final SePayService sePayService;
+
+    @PostMapping("/create-with-qr")
+    public PaymentResponse createPaymentWithQR(@RequestBody PaymentRequest request) {
+        return sePayService.createPaymentWithQR(request, 300, 300);
+    }
     
     public PaymentController(SePayService sePayService) {
         this.sePayService = sePayService;
