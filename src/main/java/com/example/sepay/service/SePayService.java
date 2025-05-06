@@ -10,13 +10,15 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
-import java.math.BigDecimal;
 
 @Service
 public class SePayService {
@@ -35,6 +37,10 @@ public class SePayService {
     
     private final TransactionRepository transactionRepository;
 
+    public SePayService(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
     public String generateQRCode(String paymentUrl, int width, int height) {
         try {
             String qrCodeData = URLEncoder.encode(paymentUrl, StandardCharsets.UTF_8.toString());
@@ -49,10 +55,6 @@ public class SePayService {
         String qrCodeUrl = generateQRCode(response.getPaymentUrl(), qrWidth, qrHeight);
         response.setQrCodeUrl(qrCodeUrl);
         return response;
-    }
-    
-    public SePayService(TransactionRepository transactionRepository) {
-        this.transactionRepository = transactionRepository;
     }
     
     public PaymentResponse createPayment(PaymentRequest request) {
@@ -76,7 +78,6 @@ public class SePayService {
     }
     
     public void handleCallback(CallbackData callbackData) {
-        // Verify checksum
         if (!verifyChecksum(callbackData)) {
             throw new RuntimeException("Invalid checksum");
         }
@@ -132,6 +133,6 @@ public class SePayService {
     }
     
     private String encodeValue(String value) {
-        return java.net.URLEncoder.encode(value, StandardCharsets.UTF_8);
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 }
