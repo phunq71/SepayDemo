@@ -6,5 +6,6 @@ import lombok.Data;
 public class PaymentResponse {
     private String orderId;
     private String paymentUrl;
+    private String qrCodeUrl; // Thêm trường mới
     private String status;
 }
