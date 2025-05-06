@@ -6,6 +6,17 @@
     <title>SePay Integration</title>
     <script src="/js/app.js"></script>
     <style>
+         .qr-container {
+            margin-top: 20px;
+            text-align: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .qr-container img {
+            max-width: 300px;
+            margin: 10px auto;
+        }
         body {
             font-family: Arial, sans-serif;
             max-width: 600px;
@@ -45,7 +56,7 @@
 </head>
 <body>
     <div id="payment-app">
-        <h1>Thanh toán với SePay</h1>
+        <h1>Thanh toán với SePay qua QR Code</h1>
         
         <div class="form-group">
             <label for="amount">Số tiền:</label>
@@ -58,11 +69,19 @@
         </div>
         
         <button @click="createPayment" :disabled="isLoading">
-            <span v-if="!isLoading">Thanh toán</span>
+            <span v-if="!isLoading">Tạo QR Thanh toán</span>
             <span v-else>Đang xử lý...</span>
         </button>
         
         <div v-if="error" class="error">{{ error }}</div>
+        
+        <!-- Thêm phần hiển thị QR code -->
+        <div v-if="qrCodeUrl" class="qr-container">
+            <h3>Quét mã QR để thanh toán</h3>
+            <img :src="qrCodeUrl" alt="QR Code">
+            <p>Hoặc <a :href="paymentUrl" target="_blank">nhấn vào đây</a> để thanh toán qua trang SePay</p>
+            <p>Mã đơn hàng: {{ orderId }}</p>
+        </div>
     </div>
 </body>
 </html>
