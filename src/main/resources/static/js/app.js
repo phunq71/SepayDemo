@@ -19,15 +19,18 @@ function initVueApp() {
             const amount = ref(0);
             const description = ref('');
             const paymentUrl = ref('');
+            const qrCodeUrl = ref('');
+            const orderId = ref('');
             const isLoading = ref(false);
             const error = ref(null);
             
             const createPayment = async () => {
                 isLoading.value = true;
                 error.value = null;
+                qrCodeUrl.value = '';
                 
                 try {
-                    const response = await fetch('/api/payment/create', {
+                    const response = await fetch('/api/payment/create-with-qr', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -44,7 +47,8 @@ function initVueApp() {
                     
                     if (response.ok) {
                         paymentUrl.value = data.paymentUrl;
-                        window.location.href = data.paymentUrl;
+                        qrCodeUrl.value = data.qrCodeUrl;
+                        orderId.value = data.orderId;
                     } else {
                         throw new Error(data.message || 'Failed to create payment');
                     }
@@ -59,6 +63,8 @@ function initVueApp() {
                 amount,
                 description,
                 paymentUrl,
+                qrCodeUrl,
+                orderId,
                 isLoading,
                 error,
                 createPayment
